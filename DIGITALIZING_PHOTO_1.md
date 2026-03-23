@@ -53,6 +53,39 @@ Before cards are packed into boxes, each card must be photographed and linked to
 
 ---
 
+## Local Storage & Crash Safety
+
+The app must store scanned images on the local disk immediately after capture so that a crash, accidental close, or power loss never forces the operator to rescan cards.
+
+### How it works
+
+- **Auto-save on approve** — as soon as the operator presses **Approve**, the cropped image is written to a local session folder (e.g. `~/NoModScans/<collection-name>/<timestamp>.jpg`).
+- **Session manifest** — alongside the images, the app maintains a lightweight JSON file (e.g. `session.json`) that records the collection name, creation time, and the list of approved image paths in order.
+- **Resume on launch** — when the app starts, it detects any incomplete session (approved images present but not yet uploaded) and offers the operator the option to **Resume** the previous session, skipping straight to the thumbnail grid with all previously scanned cards already loaded.
+- **No duplicates** — images that were already uploaded successfully are marked in the manifest so they are not re-uploaded if the session is resumed after a partial upload.
+
+### Session folder structure
+
+```
+~/NoModScans/
+  March-Prizm-Lot_2024-03-15T10-22/
+    session.json        ← manifest (collection name, status, image list)
+    0001_1710494520.jpg
+    0002_1710494535.jpg
+    ...
+```
+
+### Failure scenarios covered
+
+| Event | Result |
+|---|---|
+| App closed before pressing **Send** | Reopen → Resume prompt → all scanned cards present |
+| Crash during scan loop | Reopen → Resume prompt → only cards scanned before crash present |
+| Crash mid-upload | Reopen → Resume prompt → already-uploaded images skipped, rest retried |
+| Normal completion | Session folder kept for 7 days then auto-deleted |
+
+---
+
 ## System Requirements
 
 The System needs full CRUD support for two new entities:
