@@ -33,9 +33,8 @@ Change everything after bullet 4 to the following:
 What we need to plan:
 1) How to make photos of those cards
 2) How to upload them to our website storage
-3) How to create a dedicated page in our website that will display those photos in a rectangular area and shuffle them every time a card was marked as sold that makes it disappear
+3) How to create a dedicated page in our website that will display those photos in a rectangular area and shuffle them every time a card was marked as sold that makes it disappear from this page
    1) We will use this page in our OBS
-4) How to re-shuffle cards with minimum changes on dedicated page each time a valueable card is sold and removed from the display
 
 Let's introduce terms:
 1) Our website will be called "System"
