@@ -27,7 +27,7 @@ Before cards are packed into boxes, each card must be photographed and linked to
 ### Step 2 — Scan Cards
 4. Pick up a card from the current collection
 5. Place it face-up on the capture surface
-6. Check the monitor — preview shows **"Ready"** or **"Adjust"**
+6. Check the monitor — preview shows **"Ready"** or **"Adjust"**, with the detected card bounds overlaid so the operator can verify the crop area before capturing
 7. Press the button to capture
 8. App automatically crops the captured image to the card bounds before displaying it
 9. App shows the processed photo — press **Approve** or **Retake**
