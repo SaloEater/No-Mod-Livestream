@@ -27,18 +27,19 @@ Before cards are packed into boxes, each card must be photographed and linked to
 ### Step 2 — Scan Cards
 4. Pick up a card from the current collection
 5. Place it face-up on the capture surface
-6. Check the monitor — preview shows **"Ready"** or **"Adjust"**
+6. Check the monitor — preview shows **"Ready"** or **"Adjust"**, with the detected card bounds overlaid so the operator can verify the crop area before capturing
 7. Press the button to capture
-8. App shows the processed photo — press **Approve** or **Retake**
+8. App automatically crops the captured image to the card bounds before displaying it
+9. App shows the processed photo — press **Approve** or **Retake**
    - **Approve:** Photo is staged; move on
    - **Retake:** Photo discarded; reposition and capture again
-9. Place the card into the box and repeat for every card
+10. Place the card into the box and repeat for every card
 
 ### Step 3 — Send & Package
-10. After all cards are scanned, app shows a thumbnail grid with a count
-11. Optionally rename the collection, then click **"Send"**
-12. Upload starts in the background — minimize the app and begin sealing and shuffling boxes
-13. App shows **"Upload complete"** notification when done
+11. After all cards are scanned, app shows a thumbnail grid with a count
+12. Optionally rename the collection, then click **"Send"**
+13. Upload starts in the background — minimize the app and begin sealing and shuffling boxes
+14. App shows **"Upload complete"** notification when done
 
 ---
 
