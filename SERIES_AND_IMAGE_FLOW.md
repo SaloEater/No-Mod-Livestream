@@ -12,7 +12,7 @@ A **Series** represents one scanning batch. It groups every approved card into a
 
 Key properties of a Series:
 
-- **Ordered** — cards are numbered in the order they were approved. This order is meaningful and must be preserved.
+- **Unordered** — cards within a Series are not assigned a position; the set of photos matters, not their sequence.
 - **Has a status** — a Series is either **Open** (scanning is still in progress) or **Closed** (the operator has confirmed the batch is complete and submitted it).
 - **Is the source of truth** — once an image is accepted into a Series, the backend owns it. The app holds it temporarily only until the backend confirms receipt.
 
@@ -26,7 +26,6 @@ Key properties of a Series:
 
 ### Adding Cards to a Series
 - Each approved photo is immediately forwarded to the backend and registered as a new entry in the open Series.
-- The backend assigns each entry a position number within the Series.
 - If the backend does not confirm receipt, the photo is not considered part of the Series — the operator is shown an error and can retake or retry.
 - Retaken photos (where the operator chose **Retake**) are never sent to the backend and never enter the Series.
 
@@ -73,7 +72,6 @@ Photos available in System
 
 - Accepting incoming images from the app and storing them in the correct place.
 - Confirming receipt to the app so the operator knows the card is safely recorded.
-- Maintaining the order of cards within the Series.
 - Preventing a second open Series from being created while one is already open.
 - Exposing the Series and its photos to the rest of the System once the Series is closed.
 
