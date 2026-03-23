@@ -36,7 +36,6 @@ What we need to plan:
 3) How to create a dedicated page in our website that will display those photos in a rectangular area and shuffle them every time a box is sold
    1) We will use this page in our OBS
 4) How to re-shuffle cards with minimum changes on dedicated page each time a valueable card is sold and removed from the display
-5) How streamer would now if this particular card he just pulled from the mystery box is a valueble one and needed to be checked out of shuffle page
 
 Let's introduce terms:
 1) Our website will be called "System"
