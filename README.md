@@ -43,3 +43,7 @@ Let's introduce terms:
 3) Website page where we create breaks and assign them to livestreams is "Breaks Page"
 4) Website page where we create spots and assign them to breaks is "Spots Page"
 3) Website page where we display valuable cards is "Cards Board Page"
+
+References:
+1) Frontend code - https://github.com/SaloEater/Whatnot-Frontend
+2) Backend code - https://github.com/SaloEater/WhatNot-Webhook-Holder
