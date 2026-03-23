@@ -10,4 +10,7 @@
 ## Card Scanning
 
 - Can we have several series "In progress" in terms of packaging or it's the only one
-- 
+
+
+## Live stream
+- How streamer would now if this particular card he just pulled from the mystery box is a valueble one and needed to be checked out of shuffle page
