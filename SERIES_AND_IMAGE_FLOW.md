@@ -25,13 +25,14 @@ Key properties of a Series:
 - Only one Series can be **Open** at a time. If the operator reopens the app with an existing open Series, they resume it rather than starting a new one.
 
 ### Adding Cards to a Series
-- Each approved photo is immediately forwarded to the backend and registered as a new entry in the open Series.
-- If the backend does not confirm receipt, the photo is not considered part of the Series — the operator is shown an error and can retake or retry.
-- Retaken photos (where the operator chose **Retake**) are never sent to the backend and never enter the Series.
+- Each approved photo is saved locally and staged for upload.
+- Retaken photos (where the operator chose **Retake**) are discarded and never enter the Series.
 
 ### Closing a Series
-- The operator closes the Series by pressing **Send** in the app.
-- Once closed, no further cards can be added to it.
+- The operator reviews the thumbnail grid and clicks **Send** when all cards have been scanned.
+- All staged photos are sent to the backend at once and registered as entries in the Series.
+- If the backend does not confirm receipt of a photo, the operator is shown an error and can retry the upload.
+- Once the backend confirms all photos, the Series is closed and no further cards can be added.
 - The backend finalises the Series, making all its photos available in the System.
 
 ---
@@ -48,16 +49,18 @@ Series opened  <--------------------+
 Card scanned & approved             |
       |                             |
       v                             |
-Image sent to backend               |
-      |                             |
-Backend confirms receipt            |
-      |                             |
-Card registered in Series           |
+Photo staged locally                |
       |                             |
 More cards? -------------------------+
       |
       v
 Operator presses Send
+      |
+      v
+All staged photos sent to backend
+      |
+      v
+Backend confirms receipt
       |
       v
 Series closed
@@ -80,7 +83,7 @@ Photos available in System
 ## What the App Is Responsible For
 
 - Creating a new Series (or resuming an existing open one) when scanning starts.
-- Sending each approved photo to the backend immediately after approval.
-- Displaying confirmation (or error) feedback to the operator per card.
-- Triggering the Series close when the operator presses **Send**.
-- Holding the image locally only as a temporary buffer until the backend confirms receipt.
+- Staging each approved photo locally until the operator presses **Send**.
+- Sending all staged photos to the backend when the operator presses **Send**.
+- Displaying confirmation (or error) feedback after the upload attempt.
+- Triggering the Series close once the backend confirms all photos.
