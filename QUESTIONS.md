@@ -14,3 +14,6 @@
 
 ## Live stream
 - How streamer would now if this particular card he just pulled from the mystery box is a valueble one and needed to be checked out of shuffle page
+
+## Cards value
+- Do we assume all cards should be equal size or some of them must be bigger due to being more expensive?
