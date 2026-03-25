@@ -42,7 +42,7 @@ The existing data model needs two additions to support this page:
 
 ### 1. Spot → `valuable_photo_id` (already implied in existing docs)
 
-Each Spot can optionally reference a Photo from the Series. This is the photo that will
+Each Spot can optionally reference a Photo from the Collection. This is the photo that will
 appear on the Cards Board Page for that Spot.
 
 ```
@@ -71,15 +71,15 @@ the Spot's sold state.
 ### New Read Endpoint
 
 ```
-GET /series/:seriesId/board
+GET /collections/:collectionId/board
 ```
 
 Returns the list of photos that are currently available (valuable and not sold) for a
-given Series. Response shape:
+given Collection. Response shape:
 
 ```json
 {
-  "seriesId": "abc123",
+  "collectionId": "abc123",
   "photos": [
     { "id": "ph1", "url": "/photos/ph1.jpg" },
     { "id": "ph2", "url": "/photos/ph2.jpg" }
@@ -90,29 +90,17 @@ given Series. Response shape:
 The backend computes availability by joining Spots with Photos — no extra storage field
 is needed.
 
-### Real-Time Change Notification
+### Change Detection via Polling
 
-The page must know immediately when the available set changes (a Spot is marked as sold).
-Two options are viable; **Server-Sent Events (SSE)** is recommended for this use case
-because updates flow in one direction only (server → browser) and SSE is simpler to
-implement and maintain than a full WebSocket.
+The page detects changes to the available set by polling the board endpoint on a fixed
+interval (every 5 seconds). On each poll:
 
-```
-GET /series/:seriesId/board/stream   (SSE endpoint)
-```
+1. Compare the returned photo IDs to the currently displayed set.
+2. If the set is identical, do nothing — no reshuffle, no re-render.
+3. If a photo is missing (sold), remove it, reshuffle, and re-render.
 
-The server pushes a single event type:
-
-```
-event: card-sold
-data: { "photoId": "ph1" }
-```
-
-The page removes the named photo and reshuffles.
-
-**Fallback:** If SSE adds complexity early in development, a simple poll on a 5-second
-interval is an acceptable temporary substitute. The UX difference is imperceptible for
-a livestream where boxes sell roughly once per minute.
+Polling every 5 seconds means the display updates within 5 seconds of a box being sold,
+which is imperceptible during a livestream where boxes sell roughly once per minute.
 
 ### No New Write Endpoints
 
@@ -126,31 +114,29 @@ Board Page is read-only. No new write paths are required.
 ### Route
 
 ```
-/board/:seriesId
+/board/:collectionId
 ```
 
 This URL is what the operator pastes into OBS as a Browser Source.
 
 ### Page Behaviour
 
-1. On load: fetch `GET /series/:seriesId/board` to get the initial photo list.
+1. On load: fetch `GET /collections/:collectionId/board` to get the initial photo list.
 2. Shuffle the list randomly (Fisher-Yates or equivalent).
 3. Render all images in the layout described below.
-4. Open an SSE connection to `/series/:seriesId/board/stream`.
-5. On receiving a `card-sold` event:
-   a. Remove the identified photo from the list.
-   b. Re-shuffle the remaining list.
-   c. Re-render the layout.
-6. On SSE connection loss: reconnect automatically (browsers do this natively for SSE).
+4. Start a poll: repeat step 1 every 5 seconds.
+5. On each poll response, compare photo IDs to the current set:
+   - If unchanged: skip.
+   - If a photo was removed: update the local list, re-shuffle, re-render.
 
 ### No UI Controls Visible in OBS
 
 The page must have no visible navigation, headers, or controls. Any operator controls
-(e.g. selecting a Series) must be accessible only outside the OBS capture region, or
+(e.g. selecting a Collection) must be accessible only outside the OBS capture region, or
 handled via query parameters:
 
 ```
-/board/abc123?controls=true   ← show series selector (for setup)
+/board/abc123?controls=true   ← show collection selector (for setup)
 /board/abc123                 ← clean display only (for OBS)
 ```
 
@@ -214,11 +200,9 @@ from 11 to 8).
 The operator adds the Cards Board Page as a **Browser Source** in OBS:
 
 1. In OBS, add a new source → **Browser**.
-2. Set URL to `http://<system-host>/board/<seriesId>`.
+2. Set URL to `http://<system-host>/board/<collectionId>`.
 3. Set width/height to match the OBS canvas (e.g. 1920 × 1080).
-4. Enable **"Shutdown source when not visible"** = off (so the SSE connection stays alive
-   when the scene is not active but the operator switches back mid-stream).
-5. No custom CSS needed — the page is already full-bleed.
+4. No custom CSS needed — the page is already full-bleed.
 
 The page must work correctly when rendered in a headless Chromium context (which is what
 OBS uses for Browser Sources). This means:
@@ -231,24 +215,25 @@ OBS uses for Browser Sources). This means:
 ## Lifecycle Diagram
 
 ```
-Operator sets up OBS Browser Source (URL = /board/:seriesId)
+Operator sets up OBS Browser Source (URL = /board/:collectionId)
       |
       v
 Page loads → fetches available photos → shuffles → renders grid
       |
       v
-SSE connection opened  <-----------------------------------------+
-      |                                                           |
-      v                                                           |
-Livestream runs, boxes are sold on Spots Page                     |
-      |                                                           |
-      v                                                           |
-Backend fires card-sold SSE event                                 |
-      |                                                           |
-      v                                                           |
-Page removes photo, reshuffles remaining, re-renders grid         |
-      |                                                           |
-No more cards? No → wait for next event --------------------------+
+Poll starts (every 5 s)  <--------------------------------------+
+      |                                                         |
+      v                                                         |
+Poll fires → GET /collections/:collectionId/board              |
+      |                                                         |
+      +-- Photo set unchanged? → do nothing -------------------+
+      |
+      +-- Photo removed (card sold)?
+            |
+            v
+      Remove photo, reshuffle, re-render grid ------------------+
+      |
+No more cards? No → continue polling --------------------------(above)
       |
       v
 All cards sold → grid is empty → page shows nothing (or a placeholder)
@@ -264,5 +249,5 @@ All cards sold → grid is empty → page shows nothing (or a placeholder)
   share link for now).
 - Animations or transitions between reshuffles (the grid simply re-renders; smooth
   animations can be added later).
-- Multiple simultaneous Series on one board (one Series per board URL).
+- Multiple simultaneous Collections on one board (one Collection per board URL).
 - Historical view of which cards have been sold.
