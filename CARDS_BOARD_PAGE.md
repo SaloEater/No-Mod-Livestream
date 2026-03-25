@@ -147,45 +147,41 @@ same series; only the operator mode has interactive controls.
 
 ### Operator Mode (`?controls=true`)
 
+The layout is identical to the clean OBS display — the same full-viewport card grid,
+same sizing algorithm, same shuffled order. The only difference is that three interactive
+behaviours are layered on top.
+
 #### 1. Full-Screen Card Preview on Hover
 
-When the operator hovers over any card image, that image is displayed full-screen in an
-overlay on top of the grid. This lets the operator quickly confirm whether the card on
-screen matches the physical card they just pulled from a box.
+Hovering over any card shows a full-screen overlay of that image so the operator can
+confirm it matches the physical card just pulled from a box.
 
-- The overlay appears immediately on hover (no click required).
-- The image is shown at the largest size that fits the viewport while preserving its
-  aspect ratio (i.e. `object-fit: contain` on a dark backdrop).
-- Moving the mouse off the image dismisses the overlay.
-- The overlay is purely visual — hovering does not change any state.
+- Overlay appears immediately on hover; no click required.
+- Image fills the screen at the largest size that preserves its aspect ratio
+  (`object-fit: contain` on a semi-transparent dark backdrop).
+- Moving the mouse off the card dismisses the overlay.
+- Hovering does not change any state.
 
 #### 2. Click a Card to Mark It as Sold
 
-Clicking on a card image in the grid marks that card as sold. The click action:
+Clicking a card in the grid marks it as sold.
 
-1. Sends a write request to the backend: `PATCH /series/:seriesId/photos/:photoId` with
-   `{ "sold": true }`.
-2. On success, removes the card from the grid display and triggers a reshuffle, identical
-   to the automatic removal that happens via polling.
-3. Shows a brief confirmation (e.g. a subtle flash or toast) so the operator knows the
-   action was registered.
+1. Sends `PATCH /series/:seriesId/photos/:photoId` with `{ "sold": true }`.
+2. On success, removes the card from the grid and triggers a reshuffle (same as
+   automatic removal via polling).
+3. Shows a brief confirmation (subtle flash or toast) so the operator knows it
+   registered.
 
-If the request fails, the card stays in the grid and the operator is shown an error.
+If the request fails, the card stays in the grid and an error is shown.
 
 #### 3. View Sold Cards and Restore Them
 
-A collapsible "Sold" panel is visible at the bottom (or side) of the operator view. It
-lists all cards that have been marked as sold for this series, shown as thumbnails.
+A collapsible "Sold" panel (collapsed by default) lists thumbnails of all sold cards for
+this series.
 
-- Hovering a sold thumbnail triggers the same full-screen preview overlay as described
-  above.
-- Clicking a sold thumbnail marks the card as unsold: sends
-  `PATCH /series/:seriesId/photos/:photoId` with `{ "sold": false }`, which returns the
-  card to the available set.
-- When a card is restored, it is added back into the grid, the grid reshuffles, and the
-  card is removed from the Sold panel.
-- The Sold panel is collapsed by default to keep it out of the way during the livestream;
-  the operator can expand it at any time.
+- Hovering a sold thumbnail shows the same full-screen overlay described above.
+- Clicking a sold thumbnail restores it: sends `{ "sold": false }`, adds the card back
+  to the grid with a reshuffle, and removes it from the panel.
 
 ---
 
