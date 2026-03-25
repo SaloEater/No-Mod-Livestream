@@ -131,14 +131,61 @@ This URL is what the operator pastes into OBS as a Browser Source.
 
 ### No UI Controls Visible in OBS
 
-The page must have no visible navigation, headers, or controls. Any operator controls
-(e.g. selecting a Series) must be accessible only outside the OBS capture region, or
-handled via query parameters:
+The page must have no visible navigation, headers, or controls when used as an OBS source.
+Operator controls are enabled separately via a query parameter:
 
 ```
-/board/abc123?controls=true   ← show series selector (for setup)
-/board/abc123                 ← clean display only (for OBS)
+/board/abc123?controls=true   ← operator mode (separate browser tab, not in OBS)
+/board/abc123                 ← clean display only (pasted into OBS Browser Source)
 ```
+
+The operator typically opens `/board/abc123?controls=true` in a regular browser tab on
+their screen while OBS captures `/board/abc123` in the background. Both URLs point at the
+same series; only the operator mode has interactive controls.
+
+---
+
+### Operator Mode (`?controls=true`)
+
+#### 1. Full-Screen Card Preview on Hover
+
+When the operator hovers over any card image, that image is displayed full-screen in an
+overlay on top of the grid. This lets the operator quickly confirm whether the card on
+screen matches the physical card they just pulled from a box.
+
+- The overlay appears immediately on hover (no click required).
+- The image is shown at the largest size that fits the viewport while preserving its
+  aspect ratio (i.e. `object-fit: contain` on a dark backdrop).
+- Moving the mouse off the image dismisses the overlay.
+- The overlay is purely visual — hovering does not change any state.
+
+#### 2. Click a Card to Mark It as Sold
+
+Clicking on a card image in the grid marks that card as sold. The click action:
+
+1. Sends a write request to the backend: `PATCH /series/:seriesId/photos/:photoId` with
+   `{ "sold": true }`.
+2. On success, removes the card from the grid display and triggers a reshuffle, identical
+   to the automatic removal that happens via polling.
+3. Shows a brief confirmation (e.g. a subtle flash or toast) so the operator knows the
+   action was registered.
+
+If the request fails, the card stays in the grid and the operator is shown an error.
+
+#### 3. View Sold Cards and Restore Them
+
+A collapsible "Sold" panel is visible at the bottom (or side) of the operator view. It
+lists all cards that have been marked as sold for this series, shown as thumbnails.
+
+- Hovering a sold thumbnail triggers the same full-screen preview overlay as described
+  above.
+- Clicking a sold thumbnail marks the card as unsold: sends
+  `PATCH /series/:seriesId/photos/:photoId` with `{ "sold": false }`, which returns the
+  card to the available set.
+- When a card is restored, it is added back into the grid, the grid reshuffles, and the
+  card is removed from the Sold panel.
+- The Sold panel is collapsed by default to keep it out of the way during the livestream;
+  the operator can expand it at any time.
 
 ---
 
