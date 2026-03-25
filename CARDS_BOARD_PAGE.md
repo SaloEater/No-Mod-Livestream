@@ -42,7 +42,7 @@ The existing data model needs two additions to support this page:
 
 ### 1. Spot → `valuable_photo_id` (already implied in existing docs)
 
-Each Spot can optionally reference a Photo from the Collection. This is the photo that will
+Each Spot can optionally reference a Photo from the Series. This is the photo that will
 appear on the Cards Board Page for that Spot.
 
 ```
@@ -71,15 +71,15 @@ the Spot's sold state.
 ### New Read Endpoint
 
 ```
-GET /collections/:collectionId/board
+GET /series/:seriesId/board
 ```
 
 Returns the list of photos that are currently available (valuable and not sold) for a
-given Collection. Response shape:
+given Series. Response shape:
 
 ```json
 {
-  "collectionId": "abc123",
+  "seriesId": "abc123",
   "photos": [
     { "id": "ph1", "url": "/photos/ph1.jpg" },
     { "id": "ph2", "url": "/photos/ph2.jpg" }
@@ -114,14 +114,14 @@ Board Page is read-only. No new write paths are required.
 ### Route
 
 ```
-/board/:collectionId
+/board/:seriesId
 ```
 
 This URL is what the operator pastes into OBS as a Browser Source.
 
 ### Page Behaviour
 
-1. On load: fetch `GET /collections/:collectionId/board` to get the initial photo list.
+1. On load: fetch `GET /series/:seriesId/board` to get the initial photo list.
 2. Shuffle the list randomly (Fisher-Yates or equivalent).
 3. Render all images in the layout described below.
 4. Start a poll: repeat step 1 every 5 seconds.
@@ -132,11 +132,11 @@ This URL is what the operator pastes into OBS as a Browser Source.
 ### No UI Controls Visible in OBS
 
 The page must have no visible navigation, headers, or controls. Any operator controls
-(e.g. selecting a Collection) must be accessible only outside the OBS capture region, or
+(e.g. selecting a Series) must be accessible only outside the OBS capture region, or
 handled via query parameters:
 
 ```
-/board/abc123?controls=true   ← show collection selector (for setup)
+/board/abc123?controls=true   ← show series selector (for setup)
 /board/abc123                 ← clean display only (for OBS)
 ```
 
@@ -200,7 +200,7 @@ from 11 to 8).
 The operator adds the Cards Board Page as a **Browser Source** in OBS:
 
 1. In OBS, add a new source → **Browser**.
-2. Set URL to `http://<system-host>/board/<collectionId>`.
+2. Set URL to `http://<system-host>/board/<seriesId>`.
 3. Set width/height to match the OBS canvas (e.g. 1920 × 1080).
 4. No custom CSS needed — the page is already full-bleed.
 
@@ -215,7 +215,7 @@ OBS uses for Browser Sources). This means:
 ## Lifecycle Diagram
 
 ```
-Operator sets up OBS Browser Source (URL = /board/:collectionId)
+Operator sets up OBS Browser Source (URL = /board/:seriesId)
       |
       v
 Page loads → fetches available photos → shuffles → renders grid
@@ -224,7 +224,7 @@ Page loads → fetches available photos → shuffles → renders grid
 Poll starts (every 5 s)  <--------------------------------------+
       |                                                         |
       v                                                         |
-Poll fires → GET /collections/:collectionId/board              |
+Poll fires → GET /series/:seriesId/board                       |
       |                                                         |
       +-- Photo set unchanged? → do nothing -------------------+
       |
@@ -249,5 +249,5 @@ All cards sold → grid is empty → page shows nothing (or a placeholder)
   share link for now).
 - Animations or transitions between reshuffles (the grid simply re-renders; smooth
   animations can be added later).
-- Multiple simultaneous Collections on one board (one Collection per board URL).
+- Multiple simultaneous Series on one board (one Series per board URL).
 - Historical view of which cards have been sold.
