@@ -2,7 +2,7 @@
 
 ## Overview
 
-Before cards are packed into boxes, each card must be photographed and linked to a Series in the System. A Series is a named, ordered group of card photos for a single mystery box set. The Python desktop app handles the full process: defining the series, scanning cards, and uploading photos asynchronously — so the human can start packaging immediately after pressing Send.
+Before cards are packed into boxes, each card must be photographed and linked to a Series in the System. A Series is a named group of card photos for a single mystery box set. The Python desktop app handles the full process: defining the series, scanning cards, and uploading photos asynchronously — so the human can start packaging immediately after pressing Send.
 
 ---
 
