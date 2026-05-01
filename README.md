@@ -41,7 +41,11 @@ Let's introduce terms:
 2) Website page where we create livestreams is "Livestream Page"
 3) Website page where we create breaks and assign them to livestreams is "Breaks Page"
 4) Website page where we create spots and assign them to breaks is "Spots Page"
-3) Website page where we display valuable cards is "Cards Board Page"
+   - On this page the operator also selects which Series the break's boxes were scanned from
+5) Website page where we display valuable cards is "Cards Board Page"
+6) "Channel" is the identifier for the operator's streaming channel (e.g. their Whatnot channel name).
+   The Cards Board Page URL is scoped to a channel — the System finds the active Livestream for
+   that channel, then aggregates all photos from the Series linked to that Livestream's breaks.
 
 References:
 1) Frontend code - https://github.com/SaloEater/Whatnot-Frontend

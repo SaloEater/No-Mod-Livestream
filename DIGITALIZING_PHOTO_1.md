@@ -59,21 +59,10 @@ The app must store scanned images on the local disk immediately after capture so
 
 ### How it works
 
-- **Auto-save on approve** — as soon as the operator presses **Approve**, the cropped image is written to a local series folder (e.g. `~/NoModScans/<series-name>/<timestamp>.jpg`).
-- **Series manifest** — alongside the images, the app maintains a lightweight JSON file (e.g. `series.json`) that records the series name, creation time, and the list of approved image paths in order.
+- **Auto-save on approve** — as soon as the operator presses **Approve**, the cropped image is written to a local folder on the computer.
+- **Local record** — the app maintains a record of the series name and the list of approved photos alongside the images.
 - **Resume on launch** — when the app starts, it detects any incomplete series (approved images present but not yet uploaded) and offers the operator the option to **Resume** the previous series, skipping straight to the thumbnail grid with all previously scanned cards already loaded.
-- **No duplicates** — images that were already uploaded successfully are marked in the manifest so they are not re-uploaded if the series is resumed after a partial upload.
-
-### Series folder structure
-
-```
-~/NoModScans/
-  March-Prizm-Lot_2024-03-15T10-22/
-    series.json         ← manifest (series name, status, image list)
-    0001_1710494520.jpg
-    0002_1710494535.jpg
-    ...
-```
+- **No duplicates** — photos that were already uploaded successfully are tracked so they are not re-uploaded if the series is resumed after a partial upload.
 
 ### Failure scenarios covered
 
@@ -82,7 +71,7 @@ The app must store scanned images on the local disk immediately after capture so
 | App closed before pressing **Send** | Reopen → Resume prompt → all scanned cards present |
 | Crash during scan loop | Reopen → Resume prompt → only cards scanned before crash present |
 | Crash mid-upload | Reopen → Resume prompt → already-uploaded images skipped, rest retried |
-| Normal completion | Series folder kept for 7 days then auto-deleted |
+| Normal completion | Local folder cleaned up after a period of time (see Open Decisions) |
 
 ---
 
@@ -92,6 +81,6 @@ The System needs full CRUD support for two new entities:
 
 **Series** — create, list, view, rename, delete
 
-**Photos** — upload to a series, list, delete, mark as valuable
+**Photos** — upload to a series, list, delete, mark as sold
 
-Photos become available on the Spots Page once uploaded, where the operator flags which ones contain a valuable card for display on the Cards Board Page.
+Photos become available on the Cards Board Page once the Series is closed. All photos in the Series are displayed on the board until the operator marks them sold during the livestream.

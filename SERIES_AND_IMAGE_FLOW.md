@@ -24,13 +24,17 @@ Key properties of a Series:
 - A new Series is created when the operator names it and clicks **"Create Series"** in the app.
 - Only one Series can be **Open** at a time. If the operator reopens the app with an existing open Series, they resume it rather than starting a new one.
 
+### Linking a Series to a Break
+- After a Series is closed, the operator goes to the Spots Page and selects that Series as the source for a specific Break.
+- This link (Break → Series) is what allows the Cards Board Page to resolve which photos to display for a given channel and Livestream.
+
 ### Adding Cards to a Series
 - Each approved photo is saved locally and staged for upload.
 - Retaken photos (where the operator chose **Retake**) are discarded and never enter the Series.
 
 ### Closing a Series
 - The operator reviews the thumbnail grid and clicks **Send** when all cards have been scanned.
-- All staged photos are sent to the backend at once and registered as entries in the Series.
+- Each staged photo is sent to the backend individually and registered as an entry in the Series.
 - If the backend does not confirm receipt of a photo, the operator is shown an error and can retry the upload.
 - Once the backend confirms all photos, the Series is closed and no further cards can be added.
 - The backend finalises the Series, making all its photos available in the System.
@@ -57,7 +61,7 @@ More cards? -------------------------+
 Operator presses Send
       |
       v
-All staged photos sent to backend
+Photos sent to backend one by one
       |
       v
 Backend confirms receipt
@@ -87,3 +91,16 @@ Photos available in System
 - Sending all staged photos to the backend when the operator presses **Send**.
 - Displaying confirmation (or error) feedback after the upload attempt.
 - Triggering the Series close once the backend confirms all photos.
+
+---
+
+## Photo Entity
+
+Each photo belongs to a Series and has an optional name for internal accounting (not
+displayed on the Cards Board). Photos also carry a sold status, which defaults to false
+and is set to true by the operator during a livestream.
+
+All photos in a closed Series that have not been marked sold are displayed on the Cards
+Board Page. The operator marks a photo as sold by clicking it in the board's operator
+mode. There is no link between Photos and Spots — the operator uses visual recognition
+to match a pulled card to its photo on the board.
