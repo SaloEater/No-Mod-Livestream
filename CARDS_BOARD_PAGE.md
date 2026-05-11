@@ -31,6 +31,7 @@ A reshuffle happens **only** when the set of displayed cards changes. Specifical
 | Page is first loaded | Yes (initial random arrangement) |
 | Page is refreshed | Yes (new random arrangement) |
 | No cards change | No |
+| A card is zoomed in or out | No |
 
 There is no time-based reshuffling. The layout is stable until a card is removed.
 
@@ -93,8 +94,27 @@ Operator controls are enabled separately via a query parameter:
 ```
 
 The operator typically opens the controls URL in a regular browser tab on their screen
-while OBS captures the clean URL in the background. Both point at the same channel; only
-operator mode has interactive controls.
+while OBS captures the clean URL in the background. Both point at the same channel.
+
+The clean display has one interactive behaviour (click-to-zoom, see below) that does not
+change any backend state. Operator mode has additional controls that do change state
+(hover-preview and click-to-mark-sold).
+
+---
+
+### Click to Zoom (OBS Display)
+
+On the clean OBS display (no `?controls=true`), clicking any card zooms it to 175% of its
+current grid size in place. The zoomed card scales up on top of its neighbours; the rest
+of the grid does not reflow.
+
+- Only one card can be zoomed at a time — clicking a different card zooms that card and
+  restores the previous one to normal size.
+- A zoomed card is de-zoomed by clicking it again or clicking anywhere outside it.
+- The zoomed card scales up with a higher z-index, overlapping its neighbours. The grid
+  does not reflow.
+- Zoom does not call any backend API and does not change sold status.
+- Zoom is visible to stream viewers because it happens inside the OBS Browser Source.
 
 ---
 
@@ -129,11 +149,25 @@ If the action fails, the card stays in its current state and an error is shown.
 
 ## Layout — Filling the Rectangle
 
-Photos are arranged in a grid that covers the full viewport with no gaps. The number of
-columns adjusts automatically based on how many cards are displayed and the viewport
-dimensions, keeping cells as close to standard card proportions as possible. Each image
-fills its cell completely, cropped to the centre if needed. If the last row has fewer
-images than columns, those images are stretched to fill the remaining space.
+Photos are rendered in two aspect ratios depending on their stored orientation:
+
+- **Vertical** cards use standard portrait proportions (taller than wide).
+- **Horizontal** cards use landscape proportions (wider than tall).
+
+The layout still covers the full viewport edge-to-edge with no gaps. Within each row all
+cards share the same height; horizontal cards simply occupy more width than vertical ones
+at that height. The row height and card widths are calculated so that cards in a row sum
+exactly to the viewport width.
+
+The algorithm for packing mixed-orientation cards into rows while guaranteeing full
+coverage is described in OPEN_DECISIONS (see "Layout algorithm for mixed orientations").
+The invariants that always hold regardless of algorithm choice:
+
+- Every pixel of the rectangle is covered — no blank space anywhere.
+- Cards are never distorted; they are rendered at their natural aspect ratio or cropped to
+  centre if a row-level stretch is needed to close a gap.
+- If the last row has fewer cards than needed to naturally fill the width, those cards are
+  stretched horizontally to cover the remaining space.
 
 The layout recalculates on initial load, whenever a card is removed, and whenever the
 browser window is resized.

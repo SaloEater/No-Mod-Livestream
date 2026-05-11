@@ -100,6 +100,16 @@ Each photo belongs to a Series and has an optional name for internal accounting 
 displayed on the Cards Board). Photos also carry a sold status, which defaults to false
 and is set to true by the operator during a livestream.
 
+Each photo has an explicit **orientation** field:
+
+| Field | Type | Notes |
+|---|---|---|
+| orientation | enum: `horizontal` \| `vertical` | Set during scanning; defaults to `vertical` |
+
+Orientation is stored explicitly in the data model — it is never inferred from the
+image file's pixel dimensions at display time. This ensures the board layout is
+predictable even if an image is accidentally cropped to an ambiguous aspect ratio.
+
 All photos in a closed Series that have not been marked sold are displayed on the Cards
 Board Page. The operator marks a photo as sold by clicking it in the board's operator
 mode. There is no link between Photos and Spots — the operator uses visual recognition
