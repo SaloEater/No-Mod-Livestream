@@ -30,12 +30,11 @@ Before cards are packed into boxes, each card must be photographed and linked to
 6. Check the monitor — preview shows **"Ready"** or **"Adjust"**, with the detected card bounds overlaid so the operator can verify the crop area before capturing
 7. Press the button to capture
 8. App automatically crops the captured image to the card bounds before displaying it
-9. App shows the processed photo with an orientation toggle (**Vertical** / **Horizontal**)
-   — default is **Vertical** (most trading cards are portrait). If the card is landscape,
-   switch the toggle before approving. Then press **Approve** or **Retake**:
-   - **Approve:** Photo and its orientation are staged; move on
+9. App shows the processed photos and allow to choose from **Approve** or **Retake**:
+   - **Approve:** Photo is staged; move on
    - **Retake:** Photo discarded; reposition and capture again
-10. Place the card into the box and repeat for every card
+10. User can select a team's name assigned for the card 
+11. Place the card into the box and repeat for every card
 
 ### Step 3 — Send & Package
 11. After all cards are scanned, app shows a thumbnail grid with a count

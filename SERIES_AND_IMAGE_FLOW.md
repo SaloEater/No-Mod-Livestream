@@ -8,7 +8,7 @@ When the operator starts scanning cards, the System creates a **Series** — a n
 
 ## What Is a Series?
 
-A **Series** represents one scanning batch. It groups every approved card into an ordered list, preserving the sequence in which cards were photographed.
+A **Series** represents one scanning batch. It groups every approved card into a list.
 
 Key properties of a Series:
 
@@ -22,10 +22,11 @@ Key properties of a Series:
 
 ### Creating a Series
 - A new Series is created when the operator names it and clicks **"Create Series"** in the app.
-- Only one Series can be **Open** at a time. If the operator reopens the app with an existing open Series, they resume it rather than starting a new one.
 
 ### Linking a Series to a Break
+- This is done by another operator that is using the system later.
 - After a Series is closed, the operator goes to the Spots Page and selects that Series as the source for a specific Break.
+- Alternatively, operator can select a Series for the whole Stream and it will be applied to included Breaks.
 - This link (Break → Series) is what allows the Cards Board Page to resolve which photos to display for a given channel and Livestream.
 
 ### Adding Cards to a Series
@@ -37,7 +38,7 @@ Key properties of a Series:
 - Each staged photo is sent to the backend individually and registered as an entry in the Series.
 - If the backend does not confirm receipt of a photo, the operator is shown an error and can retry the upload.
 - Once the backend confirms all photos, the Series is closed and no further cards can be added.
-- The backend finalises the Series, making all its photos available in the System.
+- The backend finalizes the Series, making all its photos available in the System.
 
 ---
 
@@ -53,6 +54,9 @@ Series opened  <--------------------+
 Card scanned & approved             |
       |                             |
       v                             |
+Card was assigned a team            |
+      |                             |
+      v
 Photo staged locally                |
       |                             |
 More cards? -------------------------+
@@ -99,16 +103,6 @@ Photos available in System
 Each photo belongs to a Series and has an optional name for internal accounting (not
 displayed on the Cards Board). Photos also carry a sold status, which defaults to false
 and is set to true by the operator during a livestream.
-
-Each photo has an explicit **orientation** field:
-
-| Field | Type | Notes |
-|---|---|---|
-| orientation | enum: `horizontal` \| `vertical` | Set during scanning; defaults to `vertical` |
-
-Orientation is stored explicitly in the data model — it is never inferred from the
-image file's pixel dimensions at display time. This ensures the board layout is
-predictable even if an image is accidentally cropped to an ambiguous aspect ratio.
 
 All photos in a closed Series that have not been marked sold are displayed on the Cards
 Board Page. The operator marks a photo as sold by clicking it in the board's operator

@@ -5,9 +5,6 @@
 - Can we skip card names entirely — is the photo sufficient for all use cases?
 - Does the streamer need to see a card name on screen to assign a spot to a buyer, or is the card photo enough? Can there be duplicates of the same card?
 
-## Card Scanning
-- Can we have several series "In progress" in terms of packaging or it's the only one
-
 ## Live stream
 - How streamer would know if this particular card he just pulled from the mystery box is a valuable one and needed to be checked out of shuffle page
 

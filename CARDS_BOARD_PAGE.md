@@ -2,7 +2,8 @@
 
 ## Purpose
 
-The **Cards Board Page** is a dedicated System page that displays all currently-available
+The **Cards Board Page** is a dedicated System page that has 2 modes: for operator and for OBS
+and displays all currently available
 valuable card photos from the active Series in a single rectangular area. It is designed
 to be embedded as a Browser Source in OBS during a livestream. When a box is sold and its
 valuable card is marked as sold, that card disappears from the display and the remaining
@@ -39,8 +40,8 @@ There is no time-based reshuffling. The layout is stable until a card is removed
 
 ## Data Model
 
-Each photo has an optional name (for internal accounting only — not displayed on the board)
-and a sold status that defaults to false. A photo is available for display when it belongs
+Each photo has an optional name (for internal accounting only — not displayed on the board),
+team's name they belong to, and a sold status that defaults to false. A photo is available for display when it belongs
 to the active Series and has not been marked sold.
 
 There is no link between Photos and Spots. All photos in a Series appear on the board
@@ -115,6 +116,21 @@ of the grid does not reflow.
   does not reflow.
 - Zoom does not call any backend API and does not change sold status.
 - Zoom is visible to stream viewers because it happens inside the OBS Browser Source.
+- **Board is unaffected while zoomed:** The zoom is purely a visual overlay. No reshuffle,
+  no reflow, and no layout recalculation happens while a card is zoomed or when it de-zooms.
+  The grid layout is identical before and after a zoom interaction.
+- **Transform origin:** The card scales from its center point (`transform-origin: center center`).
+  If scaling from center would push part of the card outside the viewport, the transform origin
+  shifts toward the nearest edge so the card stays fully visible and is never clipped.
+- **Transition:** The zoom applies with a short CSS ease-out transition (~150 ms). De-zoom uses
+  the same transition in reverse. The scale change is always animated, never instant.
+- **Visual state:** A zoomed card receives a drop-shadow (e.g. `box-shadow: 0 8px 24px rgba(0,0,0,0.5)`)
+  to lift it visually above overlapped neighbours. No border or glow is added. The shadow is
+  removed when the card returns to normal size.
+- **Input:** Only mouse click triggers zoom. Touch and tap events are not supported.
+- **OBS interaction note (for implementers):** OBS Browser Sources natively support mouse click
+  events. The streamer can click cards directly in the OBS preview or on a display showing the
+  Browser Source. No special plugin or workaround is needed.
 
 ---
 
@@ -149,19 +165,12 @@ If the action fails, the card stays in its current state and an error is shown.
 
 ## Layout — Filling the Rectangle
 
-Photos are rendered in two aspect ratios depending on their stored orientation:
+Photos are rendered at a standard portrait aspect ratio (taller than wide). The layout
+covers the full viewport edge-to-edge with no gaps. Within each row all cards share the
+same height; card widths are calculated so that cards in a row sum exactly to the
+viewport width.
 
-- **Vertical** cards use standard portrait proportions (taller than wide).
-- **Horizontal** cards use landscape proportions (wider than tall).
-
-The layout still covers the full viewport edge-to-edge with no gaps. Within each row all
-cards share the same height; horizontal cards simply occupy more width than vertical ones
-at that height. The row height and card widths are calculated so that cards in a row sum
-exactly to the viewport width.
-
-The algorithm for packing mixed-orientation cards into rows while guaranteeing full
-coverage is described in OPEN_DECISIONS (see "Layout algorithm for mixed orientations").
-The invariants that always hold regardless of algorithm choice:
+The invariants that always hold:
 
 - Every pixel of the rectangle is covered — no blank space anywhere.
 - Cards are never distorted; they are rendered at their natural aspect ratio or cropped to
