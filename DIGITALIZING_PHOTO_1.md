@@ -25,16 +25,18 @@ Before cards are packed into boxes, each card must be photographed and linked to
 3. App registers the series with the System and enters scanning mode
 
 ### Step 2 — Scan Cards
-4. Pick up a card from the current series
-5. Place it face-up on the capture surface
-6. Check the monitor — preview shows **"Ready"** or **"Adjust"**, with the detected card bounds overlaid so the operator can verify the crop area before capturing
-7. Press the button to capture
-8. App automatically crops the captured image to the card bounds before displaying it
-9. App shows the processed photos and allow to choose from **Approve** or **Retake**:
+1. Pick up a card from the current series
+2. Place it face-up on the capture surface
+3. Check the monitor — preview shows **"Ready"** or **"Adjust"**, with the detected card bounds overlaid so the operator can verify the crop area before capturing
+4. Press the button to capture
+5. App automatically crops the captured image to the card bounds before displaying it
+6. App shows the processed photos and allow to choose from **Approve** or **Retake**:
    - **Approve:** Photo is staged; move on
    - **Retake:** Photo discarded; reposition and capture again
-10. User can select a team's name assigned for the card 
-11. Place the card into the box and repeat for every card
+   - **Set name:** Optionally rename the card before approving
+   - **Set price:** Optionally set the price for the card before approving
+7. User can select a team's name assigned for the card  
+9. Place the card into the box and repeat for every card
 
 ### Step 3 — Send & Package
 11. After all cards are scanned, app shows a thumbnail grid with a count
